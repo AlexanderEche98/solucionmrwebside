@@ -25,7 +25,7 @@
   <body>
       <h1>Juego Adivina tu número</h1>
 
-      <p>Hemos seleccionado un número aleatorío entre 1 a 100. Trata de adivinar el número, en un total de 10 turnos o menos. No te preocupes, te diremos sí el número es más alto o más bajo </p>
+      <p>Hemos seleccionado un número aleatorio entre 1 y 100. Trata de adivinar el número, en un total de 10 turnos o menos. No te preocupes, te diremos si el número es más alto o más bajo.</p>
 
 <div class="form">
   <label for="guessField">Ingresa el número a adivinar: </label><input type="text" id="guessField" class="guessField">
@@ -41,12 +41,12 @@
 </body>
 
 <script>
-  let randomNumber = Math.random() * 10;
+  let randomNumber = Math.floor(Math.random() * 100) + 1; // Corregí el generador de números para que esté entre 1 y 100 ya que estaba solo hasta 10
 
-  const ATTEMPS = 5;
+  const ATTEMPTS = 10; // Corregí la variable ATTEMPTS para que se pueda usar en 10 intentos y no en 5  como lo dice las reglas del juego .
   const guesses = document.querySelector('.guesses');
   const lastResult = document.querySelector('.lastResult');
-  const lowOrHi = document.querySelector('lowOrHi');
+  const lowOrHi = document.querySelector('.lowOrHi'); // Corregí el selector para que tenga el punto delante de lowOrHi.
   const guessSubmit = document.querySelector('.guessSubmit');
   const guessField = document.querySelector('.guessField');
 
@@ -55,28 +55,33 @@
 
   function checkGuess() {
 
-    let userGuess = guessField.value;
+    let userGuess = parseInt(guessField.value); // Corregí para convertir el valor ingresado a un número entero.
+    if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) { // agregue este if para ver si el valor no es numérico o está fuera del rango valido del jeuego o si no es un entero.
+          alert('Por favor, ingresa un número válido entre 1 y 100.');
+          guessField.value = '';
+          return;
+        }
     if(guessCount === 1) {
-      guesses.textContent = 'Número aleatorio anterior: ';
+      guesses.textContent = 'Números anteriores: ';
     }
     guesses.textContent += userGuess + ' ';
 
     if(userGuess === randomNumber) {
-      lastResult.textContent = '!!!Pérdistes!!!';
-      lastResult.style.backgroundColor = 'black';
+      lastResult.textContent = '¡Felicidades! ¡Adivinaste el número!';
+      lastResult.style.backgroundColor = 'green';
       lowOrHi.textContent = '';
       setGameOver();
-    } else if(guessCount === ATTEMPS) {
-      lastResult.textContent = 'Felicitaciones! adivinaste el número!';
+    } else if(guessCount === ATTEMPTS) {
+      lastResult.textContent = '¡Perdiste! El número correcto era: ' + randomNumber;
       lastResult.style.backgroundColor = 'red';
       setGameOver();
     } else {
-      lastResult.textContent = 'Incorrecto! ';
-      lastResult.style.backgroundColor = 'green';
+      lastResult.textContent = 'Incorrecto!';
+      lastResult.style.backgroundColor = 'black';
       if(userGuess < randomNumber) {
-        lowOrHi.textContent = 'El número es mayor!';
+        lowOrHi.textContent = 'El número es mayor.';
       } else if(userGuess > randomNumber) {
-        lowOrHi.textContent = 'El número es menor!';
+        lowOrHi.textContent = 'El número es menor.';
       }
     }
 
@@ -84,34 +89,34 @@
     guessField.value = '';
     guessField.focus();
   }
-  guessSubmit.addeventListener('click', checkGuess);
+  guessSubmit.addEventListener('click', checkGuess); // Corregí el nombre de la función addEventListener y el evento click.
 
   function setGameOver() {
-	  guessField.disabled = true;
-	  guessSubmit.disabled = true;
-	  resetButton = document.createElement('button');
-	  resetButton.textContent = 'Comienza un nuevo juego';
-	  document.body.appendChild(resetButton);
-	  resetButton.addeventListener('click', resetGame);
+    guessField.disabled = true;
+    guessSubmit.disabled = true;
+    resetButton = document.createElement('button');
+    resetButton.textContent = 'Comienza un nuevo juego';
+    document.body.appendChild(resetButton);
+    resetButton.addEventListener('click', resetGame); // Corregí el nombre de la función addEventListener y el evento click.
   }
 
   function resetGame() {
-	  guessCount = 1;
+    guessCount = 1;
 
-	  const resetParas = document.querySelectorAll('.resultParas p');
-	  for(let i = 0; i < resetParas.length; i++) {
-		  resetParas[i].textContent = '';
-	  }
-	  resetButton.parentNode.removeChild(resetButton);
+    const resetParas = document.querySelectorAll('.resultParas p');
+    for(let i = 0; i < resetParas.length; i++) {
+      resetParas[i].textContent = '';
+    }
+    resetButton.parentNode.removeChild(resetButton);
 
-	  guessField.disabled = false;
-	  guessSubmit.disabled = false;
-	  guessField.value = '';
-	  guessField.focus();
+    guessField.disabled = false;
+    guessSubmit.disabled = false;
+    guessField.value = '';
+    guessField.focus();
 
-	  lastResult.style.backgroundColor = 'white';
+    lastResult.style.backgroundColor = 'white';
 
-	  randomNumber = Math.floor(Math.random()) + 1;
+    randomNumber = Math.floor(Math.random() * 100) + 1; // Corregí el generador de números para que esté entre 1 y 100.
   }
 </script>
 </html>
